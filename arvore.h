@@ -3,35 +3,59 @@
 
 #include <iostream>
 #include <fstream>
-#include <list>
-#include <string>
+#include <memory>
 
 namespace arvores {
 
-class NoArvore {
-  public:
-    std::string pergunta;
-    NoArvore* no_esquerda;
-    NoArvore* no_direita;
-    
-    NoArvore(std::string nova_pergunta);
-    NoArvore(void);
-    int InserirEsquerda(NoArvore novo_no);
-    int InserirDireita(NoArvore novo_no);
-};
-
+//A arvore binaria é definida de forma genérica pra armazenar qualquer tipo de dados
+template <class TIPODADOS>
 class ArvoreBinaria {
   public:
-    ArvoreBinaria(std::string diretorio_arquivo);
     ArvoreBinaria(void);
-    void PrintarArvore(void);
     bool EstaVazia(void);
 
-  
   private:
-    NoArvore* no_raiz;
+    //Para facilitar a escrita do codigo, o ponteiro para CelulaArvore sera
+    //definido como PtrCelulaArvore, foi usado um ponteiro inteligente do C++
+    //para facilitar o gerenciamento de memoria
+    struct CelulaArvore;
+    typedef std::unique_ptr<CelulaArvore> PtrCelulaArvore;
+
+    //Definindo um no tipico da arvore binaria com ponteiros para os nos
+    //da direita e esquerda e um tipo de dado generico
+    struct CelulaArvore {
+      TIPODADOS dados;
+      PtrCelulaArvore esquerda;
+      PtrCelulaArvore direita;
+
+      //Definindo construtor de CelulaArvore
+      CelulaArvore (const TIPODADOS &dado) {
+        dados = dado;
+        esquerda = nullptr;
+        direita = nullptr;
+      }
+    };
+
+    PtrCelulaArvore raiz;
+
     
 };
+
+//Definindo funcoes genericas
+template <class TIPODADOS>
+ArvoreBinaria<TIPODADOS>::ArvoreBinaria(void) {
+  raiz = nullptr;
+}
+
+template <class TIPODADOS>
+bool ArvoreBinaria<TIPODADOS>::EstaVazia(void) {
+  if (raiz == nullptr) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 } //namespace arvores
 

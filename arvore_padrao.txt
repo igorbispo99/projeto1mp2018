@@ -1,3 +1,3 @@
-0 = "";
-1 = "", "";
-2 = "", "", "", "";
+0 = "Seu objeto é encontrado na cozinha";
+1 = x, "Seu objeto tem ponta afiada";
+2 = x, x, x, "";

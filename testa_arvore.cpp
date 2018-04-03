@@ -3,11 +3,13 @@
 #include "arvore.h"
 
 TEST_CASE("Testando construtores", "[arvore]") {
-  arvores::ArvoreBinaria construtor_string("arquivo_teste");
-  arvores::ArvoreBinaria construtor_padrao;
+  arvores::ArvoreBinaria<int> arvore_int;
+  //arvores::ArvoreBinaria<std::string> arvore_string;
+
+  REQUIRE(arvore_int.EstaVazia());
+  //REQUIRE(arvore_string.EstaVazia());
 }
 
 TEST_CASE("Testando leitura de arvores", "[arvore]") {
-  arvores::ArvoreBinaria arvore_padrao;
-  REQUIRE(arvore_padrao.EstaVazia());
+
 }
