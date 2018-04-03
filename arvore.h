@@ -2,8 +2,8 @@
 #define ARVORE_H_
 
 #include <iostream>
-#include <fstream>
 #include <memory>
+#include <bitset>
 
 namespace arvores {
 
@@ -13,8 +13,8 @@ class ArvoreBinaria {
   public:
     ArvoreBinaria(void);
     bool EstaVazia(void);
-    int InserirCelulaEsquerda(uint nivel, uint posicao, const T&);
-    void InserirCelulaDireita(uint nivel, uint posicao, const T&);
+    int InserirCelulaEsquerda(const uint nivel, const uint posicao, const T&);
+    void InserirCelulaDireita(const uint nivel, const uint posicao, const T&);
     bool PresenteNaArvore(const T&);
 
   private:
@@ -83,7 +83,7 @@ void ArvoreBinaria<T>::ErroInsercaoCelula(void) {
 }
 
 template <class T>
-int ArvoreBinaria<T>::InserirCelulaEsquerda(uint nivel, uint posicao, const T& dado) {
+int ArvoreBinaria<T>::InserirCelulaEsquerda(const uint nivel, const uint posicao, const T& dado) {
   PtrCelulaArvore nova_celula = std::make_unique<CelulaArvore>(dado);
   //Tratando o caso de quando o usuario deseja inserir a celula diretamente na raiz
   if (nivel == 0 && posicao == 0) {
@@ -102,11 +102,12 @@ int ArvoreBinaria<T>::InserirCelulaEsquerda(uint nivel, uint posicao, const T& d
   // binaria) 1000.. (1 seguido de "nivel" - 1 zeros), o que equivale a 2^nivel.
   //Exemplo :
   //  1 << 5 = 10000 (em representacao binaria) ou 32 (em representacao decimal) = 2^5
-
-  if ( posicao >=  1 << nivel ) {
+  if (posicao >= (1 << nivel)) {
     ErroInsercaoCelula();
     return FALHA;
   }
+  
+
 }
 
 // template <class T>
@@ -114,6 +115,10 @@ int ArvoreBinaria<T>::InserirCelulaEsquerda(uint nivel, uint posicao, const T& d
 
 // }
 
+std::string DecimalParaBinario(const int decimal, const int numero_de_bits);
+
 } //namespace arvores
+
+
 
 #endif 
