@@ -75,10 +75,11 @@ bool ArvoreBinaria<T>::EstaVazia(void) {
   return CelulaNula(raiz);
 }
 
-//Mensagem de erro caso o usuario tente inserir uma celula em um lugar ja alocado
+//Mensagem de erro caso o usuario tente inserir uma celula em um lugar ja alocado ou invalido
 template <class T>
 void ArvoreBinaria<T>::ErroInsercaoCelula(void) {
-  std::cerr << "Nao foi possivel inserir a celula na posicao desejada, celula ja ocupada" << std::endl;
+  std::cerr << "Nao foi possivel inserir a celula na posicao desejada." << std::endl;
+  std::cerr << "Posicao ja ocupada ou invalida." << std::endl;
 }
 
 template <class T>
@@ -94,6 +95,18 @@ int ArvoreBinaria<T>::InserirCelulaEsquerda(uint nivel, uint posicao, const T& d
       return FALHA;
     } // if EstaVazia()
   } // if nivel == 0 && posicao == 0
+
+  //Foi feita uma operacao bitwise para representar a potencia 2^nivel
+  //Como o numero 1 em representacao binaria equivale a 1, se for feito
+  //"nivel" shifts de bits para a esquerda, o resultado sera (em representacao 
+  // binaria) 1000.. (1 seguido de "nivel" - 1 zeros), o que equivale a 2^nivel.
+  //Exemplo :
+  //  1 << 5 = 10000 (em representacao binaria) ou 32 (em representacao decimal) = 2^5
+
+  if ( posicao >=  1 << nivel ) {
+    ErroInsercaoCelula();
+    return FALHA;
+  }
 }
 
 // template <class T>
