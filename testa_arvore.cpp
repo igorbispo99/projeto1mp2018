@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
-#include "arvore.h"
+#include "arvore.hpp"
 
 TEST_CASE("Testando construtores", "[arvore]") {
   arvores::ArvoreBinaria<int> arvore_int;
@@ -28,5 +28,16 @@ TEST_CASE("Testando insercao de celulas nas arvores", "[arvore]") {
   REQUIRE(arvore_double.InserirCelula(10, 2, 10.8) == arvores::FALHA); // Tentando inserir um no em um nivel ainda nao preenchido
   REQUIRE(arvore_double.InserirCelula(1, 0, 0.000001) == arvores::EXITO); 
   REQUIRE(arvore_double.InserirCelula(1,1,1) == arvores::EXITO);
+
+  arvores::ArvoreBinaria<uint> arvore_uint;
+  REQUIRE(arvore_uint.InserirCelula(1, 0, 100) == arvores::FALHA); // Tentando inserir um no antes de incializar a raiz da arvore
+  REQUIRE(arvore_uint.InserirCelula(0, 0, 0) == arvores::EXITO);
+  REQUIRE(arvore_uint.InserirCelula(10, 2, 10) == arvores::FALHA); // Tentando inserir um no em um nivel ainda nao preenchido
+  REQUIRE(arvore_uint.InserirCelula(1, 0, 3) == arvores::EXITO); 
+  REQUIRE(arvore_uint.InserirCelula(1,1,1) == arvores::EXITO);
+}
+
+TEST_CASE("Testando busca de celulas pela arvore", "[arvore]") {
+  
 
 }

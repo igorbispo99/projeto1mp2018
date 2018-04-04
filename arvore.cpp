@@ -1,4 +1,4 @@
-#include "arvore.h"
+#include "arvore.hpp"
 
 //A funcao tem como entrada um numero inteiro em base 10 e o numero de bits
 //que serao usados para representar o numero. A funcao retorna uma string de 
@@ -20,6 +20,7 @@ std::string DecimalParaBinario (const int decimal, const int numero_de_bits) {
 
     return numero_binario;
 }
+
 
 
 } //namespace arvores
