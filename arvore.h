@@ -7,14 +7,20 @@
 
 namespace arvores {
 
+enum CodigosDirecao {ESQUERDA = '0', DIREITA}; //Definindo os codigos que representam as direcoes
+enum CodigosErro {EXITO = 2, FALHA}; //Definindo os codigos de erro para as funcoes
+
+//Declaracao da funcao que converte um numero decimal para uma string de "0" e "1"
+//representando o numero "decimal" em base 2 com "numero_de bits" de digitos
+std::string DecimalParaBinario(const int decimal, const int numero_de_bits);
+
 //A arvore binaria é definida de forma genérica pra armazenar qualquer tipo de dados
 template <class T>
 class ArvoreBinaria {
   public:
     ArvoreBinaria(void);
     bool EstaVazia(void);
-    int InserirCelulaEsquerda(const uint nivel, const uint posicao, const T&);
-    void InserirCelulaDireita(const uint nivel, const uint posicao, const T&);
+    int InserirCelula(const uint nivel, const uint posicao, const T&);
     bool PresenteNaArvore(const T&);
 
   private:
@@ -41,11 +47,9 @@ class ArvoreBinaria {
       }
     };
 
-    //Definindo os codigos de erro para as funcoes
-    enum CodigosErro {EXITO, FALHA};
-
     bool CelulaNula(PtrCelulaArvore celula_arvore);
-    void ErroInsercaoCelula(void);
+    void ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao);
+    void ErroInsercaoCelulaExiste(const uint nivel, const uint posicao);
     PtrCelulaArvore raiz;
     
 };
@@ -75,38 +79,82 @@ bool ArvoreBinaria<T>::EstaVazia(void) {
   return CelulaNula(raiz);
 }
 
-//Mensagem de erro caso o usuario tente inserir uma celula em um lugar ja alocado ou invalido
+//Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
-void ArvoreBinaria<T>::ErroInsercaoCelula(void) {
-  std::cerr << "Nao foi possivel inserir a celula na posicao desejada." << std::endl;
-  std::cerr << "Posicao ja ocupada ou invalida." << std::endl;
+void ArvoreBinaria<T>::ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao) {
+  std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
+  std::cerr << " => Posicao Invalida" << std::endl;
 }
 
 template <class T>
-int ArvoreBinaria<T>::InserirCelulaEsquerda(const uint nivel, const uint posicao, const T& dado) {
-  PtrCelulaArvore nova_celula = std::make_unique<CelulaArvore>(dado);
+void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint posicao) {
+  std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
+  std::cerr << " => Ja existe uma celula nessa posicao." << std::endl;
+}
+
+template <class T>
+int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const T& dado) {
+  PtrCelulaArvore nova_celula = std::make_shared<CelulaArvore>(dado);
   //Tratando o caso de quando o usuario deseja inserir a celula diretamente na raiz
   if (nivel == 0 && posicao == 0) {
     if (EstaVazia()) {
-      raiz = std::move(nova_celula);
+      raiz = nova_celula;
       return EXITO;
     } else {
-      ErroInsercaoCelula();
+      ErroInsercaoCelulaExiste(nivel, posicao);
       return FALHA;
-    } // if EstaVazia()
+    }
   } // if nivel == 0 && posicao == 0
 
   //Foi feita uma operacao bitwise para representar a potencia 2^nivel
   //Como o numero 1 em representacao binaria equivale a 1, se for feito
   //"nivel" shifts de bits para a esquerda, o resultado sera (em representacao 
-  // binaria) 1000.. (1 seguido de "nivel" - 1 zeros), o que equivale a 2^nivel.
+  // binaria) 1000.. (1 seguido de "nivel" zeros), o que equivale a 2^nivel.
   //Exemplo :
-  //  1 << 5 = 10000 (em representacao binaria) ou 32 (em representacao decimal) = 2^5
+  //  1 << 5 = 100000 (em representacao binaria) ou 32 (em representacao decimal) = 2^5
   if (posicao >= (1 << nivel)) {
-    ErroInsercaoCelula();
+    ErroInsercaoCelulaInvalida(nivel, posicao);
     return FALHA;
   }
+
+  std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
   
+  int nivel_atual = 0;
+  int nivel_alvo = nivel - 1; 
+  PtrCelulaArvore ptr_celula = raiz;
+
+  while(nivel_atual < nivel_alvo && ptr_celula != nullptr) {
+    if (caminho_em_bits[nivel_atual] == ESQUERDA) {
+      ptr_celula = ptr_celula->esquerda;
+    } else {
+      ptr_celula = ptr_celula->direita;
+    }
+    nivel_atual++;
+  }
+
+  //Se o ultimo nivel da arvore que pôde ser atingido nao corresponde ao nivel desejado
+  //pelo usuario, significa que o usuario escolheu inserir a celula em um nivel ainda
+  //nao inicializado, tal operacao nao é permitida.
+  if (nivel_atual != nivel_alvo) {
+    ErroInsercaoCelulaInvalida(nivel, posicao);
+    return FALHA;
+  }
+
+  //Verifica se a posicao que o usuario quer inserir a celula já está ocupada
+  if ((caminho_em_bits[nivel_atual] == ESQUERDA ? ptr_celula->esquerda : ptr_celula->direita) != nullptr) {
+    ErroInsercaoCelulaExiste(nivel, posicao);
+    return FALHA;
+  }
+
+  if (caminho_em_bits[nivel_atual] == ESQUERDA) {
+    ptr_celula->esquerda = nova_celula; // nova_celula está definida no comeco da funcao
+    nova_celula->pai = ptr_celula;
+  } else {
+    ptr_celula->direita = nova_celula; // nova_celula está definida no comeco da funcao
+    nova_celula->pai = ptr_celula;
+  }
+
+  return EXITO;
 
 }
 
@@ -115,7 +163,7 @@ int ArvoreBinaria<T>::InserirCelulaEsquerda(const uint nivel, const uint posicao
 
 // }
 
-std::string DecimalParaBinario(const int decimal, const int numero_de_bits);
+
 
 } //namespace arvores
 
