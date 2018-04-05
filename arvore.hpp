@@ -8,6 +8,21 @@
 
 namespace arvores {
 
+/*
+  O acesso as celulas da arvore se da pelo sistema de coordenadas "nivel" e "posicao".
+  "Nivel" representa os niveis da arvore binaria, sendo nivel 0 a raiz da arvore.
+  "Posicao" representa a posicao da celula em relacao a cada nivel, sendo a posicao
+  mais a esquerda de cada nivel considerada posicao 0.
+
+  Exemplo: (Pos. indica Posicao)
+  Nivel 0             (Pos.0)        
+                    /         \                   
+  Nivel 1        (Pos.0)     (Pos.1)    
+                /     \      /     \ 
+  Nivel 2    (Pos.0)(Pos.1) (Pos.2) (Pos. 3) 
+  ...                  ...
+*/
+
 enum CodigosDirecao {ESQUERDA = '0', DIREITA}; //Definindo os codigos que representam as direcoes
 enum CodigosErro {EXITO = 2, FALHA}; //Definindo os codigos de erro para as funcoes
 const auto NAOENCONTROU = std::nullopt;
@@ -16,7 +31,16 @@ const auto NAOENCONTROU = std::nullopt;
 //representando o numero "decimal" em base 2 com "numero_de bits" de digitos
 std::string DecimalParaBinario(const int decimal, const int numero_de_bits);
 
-//A arvore binaria é definida de forma genérica pra armazenar qualquer tipo de dados
+/*
+  A arvore binaria é definida de forma genérica pra armazenar qualquer tipo de dados.
+  Para que o codigo compile, é necessario que tanto a declaracao quanto a definicao
+  das funcoes genericas estejam no arquivo header (.hpp) pois o compilador precisa 
+  saber em tempo de compilacao quais os tipos foram instanciados pelo arquivo body (.cpp).
+
+  Caso as funcoes genericas fossem declaradas no arquivo "arvore.hpp" e definidas 
+  no arquivo "arvore.cpp", a compilacao falharia,
+*/
+
 template <class T>
 class ArvoreBinaria {
   public:
@@ -56,14 +80,13 @@ class ArvoreBinaria {
     //de blocos de codigo.Essas funcoes nao deve ser chamadas diretamente 
     //pelo usuario e, portanto, sao funcoes privadas.
     bool CelulaNula(PtrCelulaArvore celula_arvore);
-    // PtrCelulaArvore BuscarCelula(const uint nivel, const uint posicao); 
+    PtrCelulaArvore BuscarCelula(const uint nivel, const uint posicao); 
     void ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao);
     void ErroInsercaoCelulaExiste(const uint nivel, const uint posicao);
-    void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao);
-    
+    void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao); 
 };
 
-//As funcoes genericas tem que ser definidas no arquivo header (.h) caso
+//As funcoes genericas tem que ser definidas no arquivo header (.hpp) caso
 //contrario, a compilacao do programa falhara na linkagem das bibliotecas
 
 //Por padrao, a raiz é inicializada com null
@@ -88,10 +111,10 @@ bool ArvoreBinaria<T>::EstaVazia(void) {
   return CelulaNula(raiz);
 }
 
-// template <class T>
-// PtrCelulaArvore ArvoreBinaria<T>::BuscarCelula(const uint nivel, const uint posicao) {
+template <class T>
+typename ArvoreBinaria<T>::PtrCelulaArvore ArvoreBinaria<T>::BuscarCelula(const uint nivel, const uint posicao) {
  
-// }
+}
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
