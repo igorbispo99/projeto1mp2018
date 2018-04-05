@@ -21,7 +21,7 @@ class ArvoreBinaria {
     ArvoreBinaria(void);
     bool EstaVazia(void);
     int InserirCelula(const uint nivel, const uint posicao, const T&);
-    bool PresenteNaArvore(const T&);
+    int LerCelula(const uint nivel, const uint posicao, T& saida_dado);
 
   private:
     //Para facilitar a escrita do codigo, o ponteiro para CelulaArvore sera
@@ -50,6 +50,7 @@ class ArvoreBinaria {
     bool CelulaNula(PtrCelulaArvore celula_arvore);
     void ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao);
     void ErroInsercaoCelulaExiste(const uint nivel, const uint posicao);
+    void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao);
     PtrCelulaArvore raiz;
     
 };
@@ -81,11 +82,18 @@ bool ArvoreBinaria<T>::EstaVazia(void) {
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
+void ArvoreBinaria<T>::ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao) {
+  std::cerr << "Nao existe celula inicializada em ("<< nivel << "," << posicao << ")" << std::endl;
+}
+
+//Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
+template <class T>
 void ArvoreBinaria<T>::ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao) {
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
   std::cerr << " => Posicao Invalida" << std::endl;
 }
 
+//Mensagem de erro caso o usuario tente inserir uma celula em um lugar ja ocupado
 template <class T>
 void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint posicao) {
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
@@ -167,12 +175,43 @@ int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const 
 
 }
 
+template <class T>
+int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_dado) {
+  //Calculando o caminho a ser percorrido ate a celula
+  std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
 
-// template <class T>
-// void ArvoreBinaria<T>::PresenteNaArvore(const T& dado) { 
+  int nivel_atual = 0;
+  int nivel_alvo = nivel; 
+  PtrCelulaArvore ptr_celula = raiz;
 
-// }
+  while(nivel_atual < nivel_alvo && ptr_celula != nullptr) {
+    if (caminho_em_bits[nivel_atual] == ESQUERDA) {
+      ptr_celula = ptr_celula->esquerda;
+    } else {
+      ptr_celula = ptr_celula->direita;
+    }
+    nivel_atual++;
+  }
+  
+  //Verifica se foi possivel chegar no nivel desejado pelo usuario
+  //A funcao nao retorna flags de erro
+  if (nivel_atual != nivel_alvo) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return FALHA;
+  }
 
+   //Verifica se existe uma celula na posicao desejada pelo usuario
+  if (ptr_celula == nullptr) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return FALHA;
+  }
+
+  //Caso nenhum erro seja interceptado, modifica a variavel de saida
+  //para retornar o valor desejado
+  saida_dado = ptr_celula->dados;
+
+  return EXITO;
+}
 
 
 } //namespace arvores
