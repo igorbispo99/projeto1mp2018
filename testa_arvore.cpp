@@ -15,7 +15,6 @@ TEST_CASE("Testando funcao de conversao de decimal para binario", "[arvore]") {
   REQUIRE(arvores::DecimalParaBinario(100, 7) == "1100100");
   REQUIRE(arvores::DecimalParaBinario(128, 8) == "10000000");
   REQUIRE(arvores::DecimalParaBinario(127, 10) == "0001111111");
-
 }
 
 TEST_CASE("Testando insercao de celulas nas arvores", "[arvore]") {
@@ -65,5 +64,6 @@ TEST_CASE("Testando busca de celulas pela arvore", "[arvore]") {
 
   //Verificando a leitura de celulas nao existentes
   REQUIRE(arvore_float.LerCelula(10, 10, saida_arvore) == arvores::FALHA);
+  REQUIRE(arvore_float.LerCelula(0, 10, saida_arvore) == arvores::FALHA);
 
 }

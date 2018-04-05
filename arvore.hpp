@@ -128,6 +128,9 @@ int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const 
   // binaria) 1000.. (1 seguido de "nivel" zeros), o que equivale a 2^nivel.
   //Exemplo :
   //  1 << 5 = 100000 (em representacao binaria) ou 32 (em representacao decimal) = 2^5
+
+  //Caso a posicao seja maior do que 2^nivel, com certeza trata-se de uma
+  //posicao invalida pois cada nivel tem (no maximo) 2^nivel celulas
   if (posicao >= (1 << nivel)) {
     ErroInsercaoCelulaInvalida(nivel, posicao);
     return FALHA;
@@ -176,6 +179,12 @@ int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const 
 
 template <class T>
 int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_dado) {
+
+  //Verifica se a posicao que o usuario tentou acessar nao 
+  if (posicao >= (1 << nivel)) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return FALHA;
+  }
   //Calculando o caminho a ser percorrido ate a celula
   std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
 
@@ -191,9 +200,8 @@ int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_d
     }
     nivel_atual++;
   }
-  
+
   //Verifica se foi possivel chegar no nivel desejado pelo usuario
-  //A funcao nao retorna flags de erro
   if (nivel_atual != nivel_alvo) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
     return FALHA;
