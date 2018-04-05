@@ -1,7 +1,9 @@
 CC=g++
-CXXFLAGS = -g -std=c++17 -ftest-coverage -fprofile-arcs
+CXXFLAGS= -std=c++17 -ftest-coverage -fprofile-arcs
 DEPS = arvore.h
 OBJ = arvore.o
+
+all: testa_arvore
 
 %.o: %.cpp $(DEPS)
 			$(CC) -c -o $@ $< $(CXXFLAGS)

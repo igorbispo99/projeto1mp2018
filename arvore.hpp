@@ -3,11 +3,14 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
+#include <optional> // Incluido na biblioteca padrao a partir do C++17
 
 namespace arvores {
 
 enum CodigosDirecao {ESQUERDA = '0', DIREITA}; //Definindo os codigos que representam as direcoes
 enum CodigosErro {EXITO = 2, FALHA}; //Definindo os codigos de erro para as funcoes
+const auto NAOENCONTROU = std::nullopt;
 
 //Declaracao da funcao que converte um numero decimal para uma string de "0" e "1"
 //representando o numero "decimal" em base 2 com "numero_de bits" de digitos
@@ -20,8 +23,8 @@ class ArvoreBinaria {
     ArvoreBinaria(void);
     bool EstaVazia(void);
     int InserirCelula(const uint nivel, const uint posicao, const T&);
-    int LerCelula(const uint nivel, const uint posicao, T& saida_dado);
-
+    std::optional<T> LerCelula(const uint nivel, const uint posicao);
+    int MudarValorCelula(const uint nivel, const uint posicao, T& entrada_dado;
   private:
     //Para facilitar a escrita do codigo, o ponteiro para CelulaArvore sera
     //definido como PtrCelulaArvore, foi usado um ponteiro inteligente do C++
@@ -178,12 +181,12 @@ int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const 
 }
 
 template <class T>
-int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_dado) {
+std::optional<T> ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_dado) {
 
   //Verifica se a posicao que o usuario tentou acessar nao 
   if (posicao >= (1 << nivel)) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
-    return FALHA;
+    return NAOENCONTROU;
   }
   //Calculando o caminho a ser percorrido ate a celula
   std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
@@ -204,25 +207,21 @@ int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_d
   //Verifica se foi possivel chegar no nivel desejado pelo usuario
   if (nivel_atual != nivel_alvo) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
-    return FALHA;
+    return NAOENCONTROU;
   }
 
    //Verifica se existe uma celula na posicao desejada pelo usuario
   if (ptr_celula == nullptr) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
-    return FALHA;
+    return NAOENCONTROU;
   }
 
   //Caso nenhum erro seja interceptado, modifica a variavel de saida
   //para retornar o valor desejado
-  saida_dado = ptr_celula->dados;
 
-  return EXITO;
+  return ptr_celula->dados
 }
 
-
 } //namespace arvores
-
-
 
 #endif 

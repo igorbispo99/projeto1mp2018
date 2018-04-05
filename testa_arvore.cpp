@@ -49,21 +49,27 @@ TEST_CASE("Testando busca de celulas pela arvore", "[arvore]") {
   arvore_float.InserirCelula(2, 2, 100);
 
   //Verificando se a celula 0,0 foi inserida corretamente e o valor retornado corresponde ao valor esperado
-  REQUIRE(arvore_float.LerCelula(0, 0, saida_arvore) == arvores::EXITO);
   saida_esperada = 0.1;
-  REQUIRE(saida_arvore == saida_esperada); //
+  REQUIRE(arvore_float.LerCelula(0, 0) == saida_esperada);
 
   //Verificando se a celula 1,1 foi inserida corretamente
-  REQUIRE(arvore_float.LerCelula(1,1, saida_arvore) == arvores::EXITO);
   saida_esperada = 0.001;
-  REQUIRE(saida_arvore == saida_esperada);
+  REQUIRE(arvore_float.LerCelula(1,1) == saida_esperada);
 
-  REQUIRE(arvore_float.LerCelula(2, 2, saida_arvore) == arvores::EXITO);
   saida_esperada = 100;
-  REQUIRE(saida_arvore == saida_esperada);
+  REQUIRE(arvore_float.LerCelula(2, 2) == saida_esperada);
 
   //Verificando a leitura de celulas nao existentes
-  REQUIRE(arvore_float.LerCelula(10, 10, saida_arvore) == arvores::FALHA);
-  REQUIRE(arvore_float.LerCelula(0, 10, saida_arvore) == arvores::FALHA);
+  REQUIRE(arvore_float.LerCelula(10, 10) == arvores::NAOENCONTROU);
+  REQUIRE(arvore_float.LerCelula(0, 10) == arvores::NAOENCONTROU);
 
+}
+
+TEST_CASE("Testando mudanca de dados na arvores", "[arvore]") {
+  arvores::ArvoreBinaria<int> arvore_int;
+  arvore_int.InserirCelula(0, 0, 1000);
+  arvore_int.InserirCelula(1, 1, 10);
+  arvore_int.InserirCelula(2, 2, 0);
+
+  //arvore_int.MudarValorCelula(2, 2, 1);
 }
