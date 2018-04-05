@@ -62,7 +62,6 @@ TEST_CASE("Testando busca de celulas pela arvore", "[arvore]") {
   //Verificando a leitura de celulas nao existentes
   REQUIRE(arvore_float.LerCelula(10, 10) == arvores::NAOENCONTROU);
   REQUIRE(arvore_float.LerCelula(0, 10) == arvores::NAOENCONTROU);
-
 }
 
 TEST_CASE("Testando mudanca de dados na arvores", "[arvore]") {
@@ -71,5 +70,7 @@ TEST_CASE("Testando mudanca de dados na arvores", "[arvore]") {
   arvore_int.InserirCelula(1, 1, 10);
   arvore_int.InserirCelula(2, 2, 0);
 
-  //arvore_int.MudarValorCelula(2, 2, 1);
+  int novo_valor = 1;
+  REQUIRE(arvore_int.MudarValorCelula(2, 2, novo_valor) == arvores::EXITO);
+  REQUIRE(arvore_int.LerCelula(2, 2) == novo_valor);
 }
