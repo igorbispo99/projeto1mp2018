@@ -2,6 +2,8 @@
 #include <catch.hpp>
 #include "arvore.hpp"
 
+//Definindo funcoes de teste de falhas/exitos para evitar repeticoes pelo codigo
+
 TEST_CASE("Testando construtores", "[arvore]") {
   arvores::ArvoreBinaria<int> arvore_int;
   arvores::ArvoreBinaria<std::string> arvore_string;
@@ -62,6 +64,6 @@ TEST_CASE("Testando busca de celulas pela arvore", "[arvore]") {
   REQUIRE(saida_arvore == saida_esperada);
 
   //Verificando a leitura de celulas nao existentes
-
+  REQUIRE(arvore_float.LerCelula(10, 10, saida_arvore) == arvores::FALHA);
 
 }

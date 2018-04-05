@@ -35,3 +35,6 @@ test
 #Gcov files
 *.gcda
 *.gcno
+
+#Executaveis de teste
+testa_arvore
