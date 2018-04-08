@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <optional> // Incluido na biblioteca padrao a partir do C++17
+#include <fstream>
 
 namespace arvores {
 
@@ -49,6 +50,7 @@ class ArvoreBinaria {
     int InserirCelula(const uint nivel, const uint posicao, const T);
     std::optional<T> LerCelula(const uint nivel, const uint posicao);
     int MudarValorCelula(const uint nivel, const uint posicao, const T);
+    int LerDoArquivo(const std::string diretorio_arquivo);
 
   private:
     //Para facilitar a escrita do codigo, o ponteiro para CelulaArvore sera
@@ -84,6 +86,7 @@ class ArvoreBinaria {
     void ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao);
     void ErroInsercaoCelulaExiste(const uint nivel, const uint posicao);
     void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao); 
+    void ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo);
 };
 
 //As funcoes genericas tem que ser definidas no arquivo header (.hpp) caso
@@ -134,6 +137,12 @@ template <class T>
 void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint posicao) {
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
   std::cerr << " => Ja existe uma celula nessa posicao." << std::endl;
+}
+
+//Mensagem de erro caso o arquivo nao possa ser aberto
+template <class T>
+void ArvoreBinaria<T>::ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo) {
+  std::cerr << "Arquivo " << diretorio_arquivo << " nao pode ser aberto." << std::endl;
 }
 
 template <class T>
@@ -290,6 +299,21 @@ int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, con
   ptr_celula->dados = novo_dado;
 
   return EXITO;
+}
+
+template <class T>
+int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
+  std::ifstream arquivo_arvore;
+  //Tentando abrir o arquivo especificado pelo usuario
+  arquivo_arvore.open(diretorio_arquivo);
+
+  if (!arquivo_arvore.is_open()) {
+    ErroNaoPodeAbrirArquivo(diretorio_arquivo);
+    return FALHA;
+  }
+
+  return EXITO;
+
 }
 
 } //namespace arvores

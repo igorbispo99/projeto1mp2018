@@ -74,3 +74,11 @@ TEST_CASE("Testando mudanca de dados na arvores", "[arvore]") {
   REQUIRE(arvore_int.MudarValorCelula(2, 2, novo_valor) == arvores::EXITO);
   REQUIRE(arvore_int.LerCelula(2, 2) == novo_valor);
 }
+
+TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
+  arvores::ArvoreBinaria<std::string> arvore_strings;
+  REQUIRE(arvore_strings.LerDoArquivo("arvore_padrao.txt") == arvores::EXITO);
+  
+  arvores::ArvoreBinaria<std::string> arvore;
+  REQUIRE(arvore_strings.LerDoArquivo("foo") == arvores::FALHA); // Testando leitura de um arquivo que nao existe
+}
