@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <optional> // Incluido na biblioteca padrao a partir do C++17
+#include <type_traits> // Incluido na biblioteca padrao a partir do C++17
 #include <fstream>
 
 namespace arvores {
@@ -26,7 +26,6 @@ namespace arvores {
 
 enum CodigosDirecao {ESQUERDA = '0', DIREITA}; //Definindo os codigos que representam as direcoes
 enum CodigosErro {EXITO = 2, FALHA}; //Definindo os codigos de erro para as funcoes
-const auto NAOENCONTROU = std::nullopt;
 
 //Declaracao da funcao que converte um numero decimal para uma string de "0" e "1"
 //representando o numero "decimal" em base 2 com "numero_de bits" de digitos
@@ -48,7 +47,7 @@ class ArvoreBinaria {
     ArvoreBinaria(void);
     bool EstaVazia(void);
     int InserirCelula(const uint nivel, const uint posicao, const T);
-    std::optional<T> LerCelula(const uint nivel, const uint posicao);
+    int LerCelula(const uint nivel, const uint posicao, T& saida_dado);
     int MudarValorCelula(const uint nivel, const uint posicao, const T);
     int LerDoArquivo(const std::string diretorio_arquivo);
 
@@ -88,6 +87,7 @@ class ArvoreBinaria {
     void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao); 
     void ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo);
     void ErroArquivoInvalido(const std::string diretorio_arquivo);
+    void ErroTipoLeituraDeArquivo(void);
 };
 
 //As funcoes genericas tem que ser definidas no arquivo header (.hpp) caso
@@ -151,6 +151,13 @@ template <class T>
 void ArvoreBinaria<T>::ErroArquivoInvalido(const std::string diretorio_arquivo) {
   std::cerr << "Arquivo " << diretorio_arquivo << " nao é um arquivo de arvore valido." << std::endl;
 }
+
+//Mensagem de erro caso o usuario tente usar leitura/escrita de arquivo em tipo invalido
+template <class T>
+void ArvoreBinaria<T>::ErroTipoLeituraDeArquivo(void) {
+  std::cerr << "Nao pode salvar esse tipo de arvore em arquivo" << std::endl;
+}
+
 
 template <class T>
 int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const T dado) {
@@ -231,11 +238,12 @@ int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const 
 }
 
 template <class T>
-std::optional<T> ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao) {
-  //Verifica se a posicao que o usuario tentou acessar nao 
+int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_dado) {
+  
+  //Verifica se a posicao que o usuario tentou acessar é valida
   if (posicao >= (1 << nivel)) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
-    return NAOENCONTROU;
+    return FALHA;
   }
   //Calculando o caminho a ser percorrido ate a celula
   std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
@@ -256,16 +264,18 @@ std::optional<T> ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posica
   //Verifica se foi possivel chegar no nivel desejado pelo usuario
   if (nivel_atual != nivel_alvo) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
-    return NAOENCONTROU;
+    return FALHA;
   }
 
    //Verifica se existe uma celula na posicao desejada pelo usuario
   if (ptr_celula == nullptr) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
-    return NAOENCONTROU;
+    return FALHA;
   }
 
-  return ptr_celula->dados;
+  saida_dado = ptr_celula->dados;
+
+  return EXITO;
 }
 
 template <class T>
@@ -309,6 +319,10 @@ int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, con
 }
 
 /*
+ Funcao que le as informacoes do tipo de dados arvore a partir de uma arquivo especificado
+ como parametro pra funcao. So funciona para arvore de double, float, int, booleans e strings 
+ para evitar exceptions e undefined behaviour.
+
  Como estrutura padrao, cada linha do arquivo de arvore deve conter uma instrucao
  valida de insercao de celula conforme o seguinte padrao: (nivel, posicao) = dado .
  Exemplo:
@@ -319,9 +333,8 @@ int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, con
     .
     .
   As insercoes de celula na arvore serao feitas pelo metodo InserirCelula da classe,
-  logo, os erros de posicoes e niveis invalidos serao processados normalmente.
+  logo, os erros de posicoes e niveis invalidos serao processados por InserirCelula.
 */
-
 template <class T>
 int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
   std::ifstream arquivo_arvore;
@@ -354,12 +367,12 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     uint posicao_igual = linha_arquivo.find("=");
 
     //Se a virgula nao estiver entre os parenteses, o arquivo nao pode ser valido
-    if(posicao_virgula > posicao_fecha_parenteses) {
+    if (posicao_virgula > posicao_fecha_parenteses) {
       ErroArquivoInvalido(diretorio_arquivo);
       return FALHA;
     }
     //Se o igual nao estiver apos os parenteses e a virgula, o arquivo nao pode ser valido
-    if(posicao_igual < posicao_fecha_parenteses) {
+    if (posicao_igual < posicao_fecha_parenteses) {
       ErroArquivoInvalido(diretorio_arquivo);
       return FALHA;
     }
@@ -369,11 +382,23 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     std::string string_posicao = linha_arquivo.substr(posicao_virgula + 1, posicao_fecha_parenteses - (posicao_virgula + 1));
 
     //Converte a string para um numero inteiro
-    uint nivel = std::stoi(string_nivel);
-    uint posicao = std::stoi(string_posicao);
+    uint _nivel = std::stoi(string_nivel);
+    uint _posicao = std::stoi(string_posicao);
 
-    
-  }
+    //Faz a leitura do dado que vai ser inserido na celula
+    std::string string_dado = linha_arquivo.substr(posicao_igual + 1);
+    T _dado;
+
+    //Faz a conversao do tipo de dados string para o que foi utilizado no template
+    if constexpr (std::is_same_v<T, std::string>) {
+      _dado = string_dado; 
+    }
+
+    std::cout << "(" << _nivel <<","<< _posicao <<") => " << _dado << std::endl;
+
+    //Adiciona os dados lidos na arvore com a funcao InserirCelula
+    InserirCelula(_nivel, _posicao, _dado);
+  } // while (getline (arquivo_arvore, linha_arquivo))
 
   return EXITO;
 

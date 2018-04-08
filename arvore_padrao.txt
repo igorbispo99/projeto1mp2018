@@ -1,9 +1,9 @@
-(0,0)="Seu objeto pode ser encontrado na cozinha?"
+(0,0)=Seu objeto pode ser encontrado na cozinha?
 
-(1,0)="Seu objeto pode furar ou cortar?"
-(1,1)="Seu objeto normalmente é encontrado no quarto?"
+(1,0)=Seu objeto pode furar ou cortar?
+(1,1)=Seu objeto normalmente é encontrado no quarto?
 
-(2,0)="Faca"
-(2,1)="Colher"
-(2,2)="Cama"
-(2,3)="Carro"
+(2,0)=Faca
+(2,1)=Colher
+(2,2)=Cama
+(2,3)=Carro
