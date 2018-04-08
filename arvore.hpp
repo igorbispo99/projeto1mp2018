@@ -320,7 +320,7 @@ int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, con
 
 /*
  Funcao que le as informacoes do tipo de dados arvore a partir de uma arquivo especificado
- como parametro pra funcao. So funciona para arvore de double, float, int, booleans e strings 
+ como parametro pra funcao. So funciona para arvore de double, int, booleans e strings 
  para evitar exceptions e undefined behaviour.
 
  Como estrutura padrao, cada linha do arquivo de arvore deve conter uma instrucao
@@ -390,17 +390,35 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     T _dado;
 
     //Faz a conversao do tipo de dados string para o que foi utilizado no template
+    //Para tratar cada caso de conversao separadamente, foi usada a funcao std::is_same_v<T, "tipo">()
+    //que retorna True caso o tipo de dados de V seja o mesmo do especificado a direita "tipo"
 
-    //Caso seja string, remove o ultimo caracter pois este é um caracter especial da formatacao do texto
-    if constexpr (std::is_same_v<T, std::string>) {
-      string_dado.pop_back();
+    //Caso seja string, remove o ultimo caracter pois este é um caracter especial de formatacao do texto
+    if (std::is_same_v<T, std::string>) {
+      string_dado.pop_back(); // Remove o ultimo caracter
       _dado = string_dado; 
+    } 
+    //Caso seja int, faz a conversao de string para int
+    else if (std::is_same_v<T, int> || std::is_same_v<T,uint>) {
+      _dado = std::stoi(string_dado);  
     }
-
+    //Caso seja double, faz a conversao de string para double
+    else if (std::is_same_v<T, double>) {
+      _dado = std::stod(string_dado);
+    }
+    else if (std::is_same_v<T, float>) {
+      _dado = std::stof(string_dado);
+    }
+    //Caso seja um booleano, converte a string True,true ou 1 para true booleano
+    //e converte False, false, ou 0 para false booleano
+    else if (std::is_same_v<T, bool>) {
+      string_dado.pop_back();
+      if (string_dado == "True" || string_dado == "true" || string_dado == "1") _dado = true;
+      if (string_dado == "False" || string_dado == "false" || string_dado == "0") _dado = false;
+    }
     //Adiciona os dados lidos na arvore com a funcao InserirCelula e verifica erros
-    if (InserirCelula(_nivel, _posicao, _dado) == FALHA) {
-      return FALHA;
-    }
+    if (InserirCelula(_nivel, _posicao, _dado) == FALHA) return FALHA;
+
   } // while (getline (arquivo_arvore, linha_arquivo))
 
   return EXITO;
