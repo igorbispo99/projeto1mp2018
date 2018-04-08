@@ -78,7 +78,18 @@ TEST_CASE("Testando mudanca de dados na arvores", "[arvore]") {
 TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
   arvores::ArvoreBinaria<std::string> arvore_strings;
   REQUIRE(arvore_strings.LerDoArquivo("arvore_padrao.txt") == arvores::EXITO);
+
+  std::string string_esperada = "Seu objeto pode ser encontrado na cozinha?";
+  REQUIRE(arvore_strings.LerCelula(0, 0) == string_esperada);
+
+  string_esperada = "Cama";
+  REQUIRE(arvore_strings.LerCelula(2, 2) == string_esperada);
+
+  //Testa a leitura de uma celula que nao esta presente no arquivo
+  REQUIRE(arvore_strings.LerCelula(100, 100) == arvores::NAOENCONTROU); 
   
   arvores::ArvoreBinaria<std::string> arvore;
-  REQUIRE(arvore_strings.LerDoArquivo("foo") == arvores::FALHA); // Testando leitura de um arquivo que nao existe
+  // Testando leitura de um arquivo que nao existe
+  REQUIRE(arvore_strings.LerDoArquivo("foo") == arvores::FALHA); 
+
 }

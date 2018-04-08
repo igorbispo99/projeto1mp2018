@@ -87,6 +87,7 @@ class ArvoreBinaria {
     void ErroInsercaoCelulaExiste(const uint nivel, const uint posicao);
     void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao); 
     void ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo);
+    void ErroArquivoInvalido(const std::string diretorio_arquivo);
 };
 
 //As funcoes genericas tem que ser definidas no arquivo header (.hpp) caso
@@ -143,6 +144,12 @@ void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint pos
 template <class T>
 void ArvoreBinaria<T>::ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo) {
   std::cerr << "Arquivo " << diretorio_arquivo << " nao pode ser aberto." << std::endl;
+}
+
+//Mensagem de erro caso o arquivo seja invalido
+template <class T>
+void ArvoreBinaria<T>::ErroArquivoInvalido(const std::string diretorio_arquivo) {
+  std::cerr << "Arquivo " << diretorio_arquivo << " nao é um arquivo de arvore valido." << std::endl;
 }
 
 template <class T>
@@ -301,15 +308,71 @@ int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, con
   return EXITO;
 }
 
+/*
+ Como estrutura padrao, cada linha do arquivo de arvore deve conter uma instrucao
+ valida de insercao de celula conforme o seguinte padrao: (nivel, posicao) = dado .
+ Exemplo:
+ (0,0) = 10
+ (1,0) = 100
+ (1,1) = 0
+    .
+    .
+    .
+  As insercoes de celula na arvore serao feitas pelo metodo InserirCelula da classe,
+  logo, os erros de posicoes e niveis invalidos serao processados normalmente.
+*/
+
 template <class T>
 int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
   std::ifstream arquivo_arvore;
   //Tentando abrir o arquivo especificado pelo usuario
   arquivo_arvore.open(diretorio_arquivo);
 
+  //Verifica se o arquivo pode ser aberto
   if (!arquivo_arvore.is_open()) {
     ErroNaoPodeAbrirArquivo(diretorio_arquivo);
     return FALHA;
+  }
+
+  //Iterando pelas linhas do arquivo e verificando se é um arquivo valido
+  std::string linha_arquivo;
+  while (std::getline(arquivo_arvore, linha_arquivo)) {
+    //Se a linha nao tem caracteres alem da quebra de linha, pula a iteracao do loop
+    if (linha_arquivo.size() == 1) continue; 
+    //Se a linha nao comeca com parenteses, o arquivo nao é valido
+    if (linha_arquivo[0] != '(') {
+      ErroArquivoInvalido(diretorio_arquivo);
+      return FALHA;
+    }
+    //Procura pela virgula na especificacao das coordenadas
+    uint posicao_virgula = linha_arquivo.find(",");
+
+    //Procura pelo caracter de fechamento de parenteses
+    uint posicao_fecha_parenteses = linha_arquivo.find(")");
+
+    //Procura pelo caracter de igual entre as coordenada e os dados
+    uint posicao_igual = linha_arquivo.find("=");
+
+    //Se a virgula nao estiver entre os parenteses, o arquivo nao pode ser valido
+    if(posicao_virgula > posicao_fecha_parenteses) {
+      ErroArquivoInvalido(diretorio_arquivo);
+      return FALHA;
+    }
+    //Se o igual nao estiver apos os parenteses e a virgula, o arquivo nao pode ser valido
+    if(posicao_igual < posicao_fecha_parenteses) {
+      ErroArquivoInvalido(diretorio_arquivo);
+      return FALHA;
+    }
+
+    //Faz a leitura do nivel e posicao especificados no arquivo
+    std::string string_nivel = linha_arquivo.substr(1, posicao_virgula - 1);
+    std::string string_posicao = linha_arquivo.substr(posicao_virgula + 1, posicao_fecha_parenteses - (posicao_virgula + 1));
+
+    //Converte a string para um numero inteiro
+    uint nivel = std::stoi(string_nivel);
+    uint posicao = std::stoi(string_posicao);
+
+    
   }
 
   return EXITO;
