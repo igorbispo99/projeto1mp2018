@@ -390,14 +390,17 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     T _dado;
 
     //Faz a conversao do tipo de dados string para o que foi utilizado no template
+
+    //Caso seja string, remove o ultimo caracter pois este é um caracter especial da formatacao do texto
     if constexpr (std::is_same_v<T, std::string>) {
+      string_dado.pop_back();
       _dado = string_dado; 
     }
 
-    std::cout << "(" << _nivel <<","<< _posicao <<") => " << _dado << std::endl;
-
-    //Adiciona os dados lidos na arvore com a funcao InserirCelula
-    InserirCelula(_nivel, _posicao, _dado);
+    //Adiciona os dados lidos na arvore com a funcao InserirCelula e verifica erros
+    if (InserirCelula(_nivel, _posicao, _dado) == FALHA) {
+      return FALHA;
+    }
   } // while (getline (arquivo_arvore, linha_arquivo))
 
   return EXITO;

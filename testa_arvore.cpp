@@ -88,24 +88,29 @@ TEST_CASE("Testando mudanca de dados na arvores", "[arvore]") {
   REQUIRE(valor_arvore == novo_valor);
 }
 
-// TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
-//   arvores::ArvoreBinaria<std::string> arvore_strings;
-//   std::string saida_esperada;
+TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
+  arvores::ArvoreBinaria<std::string> arvore_strings;
+  std::string saida_esperada;
+  std::string saida_arvore;
 
-//   REQUIRE(arvore_strings.LerDoArquivo("arvore_padrao.txt") == arvores::EXITO);
-//   std::cout << arvore_strings.LerCelula(0, 0) ;
-//   REQUIRE(saida == saida_esperada);
+  TesteExito(arvore_strings.LerDoArquivo("arvore_padrao.txt"));
+
+  //Testando se o valores foram lidos corretamente do arquivo
+  saida_esperada = "Seu objeto pode ser encontrado na cozinha?";
+  TesteExito(arvore_strings.LerCelula(0, 0, saida_arvore));
+
+  REQUIRE(saida_arvore == saida_esperada);
 
 
-//   saida_esperada = "Cama";
-//   auto saida_2 = arvore_strings.LerCelula(2, 2);
-//   REQUIRE(saida_2 == saida_esperada);
+  saida_esperada = "Cama";
+  TesteExito(arvore_strings.LerCelula(2, 2, saida_arvore));
+  REQUIRE(saida_arvore == saida_esperada);
 
-//   //Testa a leitura de uma celula que nao esta presente no arquivo
-//   REQUIRE(arvore_strings.LerCelula(100, 100) == arvores::NAOENCONTROU); 
+  //Testa a leitura de uma celula que nao esta presente no arquivo
+  TesteFalha(arvore_strings.LerCelula(100, 100, saida_arvore)); 
   
-//   arvores::ArvoreBinaria<std::string> arvore;
-//   // Testando leitura de um arquivo que nao existe
-//   REQUIRE(arvore_strings.LerDoArquivo("foo") == arvores::FALHA); 
+  // Testando leitura de um arquivo que nao existe
+  arvores::ArvoreBinaria<std::string> arvore;
+  TesteFalha(arvore.LerDoArquivo("foo")); 
 
-// }
+}
