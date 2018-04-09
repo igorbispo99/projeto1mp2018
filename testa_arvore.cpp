@@ -138,6 +138,6 @@ TEST_CASE("Testando a funcao de salvar as arvores no arquivo", "[arvores]") {
   double saida_arvore;
   TesteExito(arvore_double_leitura.LerCelula(1, 1, saida_arvore));
 
-  double saida_esperada = 0.1;
+  double saida_esperada = 0.01;
   REQUIRE(saida_arvore == saida_esperada);
 }

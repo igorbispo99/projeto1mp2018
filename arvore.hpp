@@ -412,7 +412,7 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
 
     //Caso seja string, remove o ultimo caracter pois este é um caracter especial de formatacao do texto
     if constexpr (std::is_same_v<T, std::string>) {
-      string_dado.pop_back(); // Remove o ultimo caracter
+      //string_dado.pop_back(); // Remove o ultimo caracter
       _dado = string_dado; 
     } 
     //Caso seja int, faz a conversao de string para int
@@ -447,6 +447,8 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
 
 }
 
+//Funcao que salva o conteudo da arvore em um arquivo especificado como parametro pelo usuario
+//O arquivo é inserido conforme o padrao de leitura especificado na funcao LerDoArquivo
 template <class T>
 int ArvoreBinaria<T>::SalvarNoArquivo(const std::string diretorio_arquivo) {
   std::ofstream arquivo_saida;
@@ -456,11 +458,27 @@ int ArvoreBinaria<T>::SalvarNoArquivo(const std::string diretorio_arquivo) {
   //Verifica se o arquivo pode se aberto para escrita
   if (!arquivo_saida.is_open()) {
     ErroArquivoInvalido(diretorio_arquivo);
-    return arvores::FALHA;
+    return FALHA;
   }
 
-  arquivo_saida.close();
-  return arvores::EXITO;
+  //Itera pelos niveis e posicoes na arvore e insere no arquivo
+  bool chegou_no_final = false;
+
+  for (int i = 0;!chegou_no_final;i++) {
+    for (int j = 0;j < (1 << i);j++) {
+      T dado_celula;
+      //Supoe que a leitura ja chegou ao final
+      chegou_no_final = true;
+      // Se a funcao LerCelula conseguir ler a celula desejada, insere seu dado em um arquivo
+      if (LerCelula(i, j, dado_celula) == EXITO) {
+        chegou_no_final = false;
+        arquivo_saida << "(" << i << "," << j << ")=" << dado_celula << std::endl;
+      }
+    }
+    //arquivo_saida << std::endl; // Insere uma quebra de linha apos cada nivel para formatar o arquivo
+  }
+
+  return EXITO;
 }
 
 template <class T>

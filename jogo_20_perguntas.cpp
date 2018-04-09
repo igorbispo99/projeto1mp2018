@@ -4,7 +4,7 @@ enum CodigosJogo {
   ERRO = -1, SIM, NAO
 };
 
-inline int AvaliarResposta(std::string resposta) {
+inline CodigosJogo AvaliarResposta(std::string resposta) {
   if (resposta == "SIM" || resposta == "sim" || resposta == "S") {
     return SIM;
   } else if (resposta == "NAO" || resposta == "nao" || resposta == "N") {
@@ -14,16 +14,25 @@ inline int AvaliarResposta(std::string resposta) {
   }
 }
 
-int RodarJogo(const std::string diretorio_jogo) {
+inline void ErroLeituraJogo(std::string arquivo_jogo) {
+  std::cout << "Nao foi possivel abrir o jogo em: " << arquivo_jogo << std::endl;
+}
+
+inline void ErroEscritaJogo(std::string arquivo_jogo) {
+  std::cout << "Nao foi possivel escrever o jogo em: " << arquivo_jogo << std::endl;
+}
+
+arvores::CodigosErro RodarJogo(const std::string diretorio_jogo_entrada, const std::string diretorio_jogo_saida) {
   arvores::ArvoreBinaria<std::string> arvore_jogo;
   std::string buffer;
-  if (arvore_jogo.LerDoArquivo("arvore_padrao.txt") == arvores::FALHA) {
-    return ERRO;
+  if (arvore_jogo.LerDoArquivo(diretorio_jogo_entrada) == arvores::FALHA) {
+    ErroLeituraJogo(diretorio_jogo_entrada);
+    return arvores::FALHA;
   }
 
   if (arvore_jogo.LerCelula(0, 0, buffer) == arvores::FALHA) {
     std::cout << "Arquivo de arvore vazio." << std::endl;
-    return ERRO;
+    return arvores::FALHA;
   }
 
   bool continua_jogo = true;
@@ -40,7 +49,7 @@ int RodarJogo(const std::string diretorio_jogo) {
       std::cout << string_arvore << " (SIM/NAO)" << std::endl;
       std::getline(std::cin, resposta_usuario);
 
-      int resposta_avaliada = AvaliarResposta(resposta_usuario);
+      CodigosJogo resposta_avaliada = AvaliarResposta(resposta_usuario);
 
       while(resposta_avaliada == ERRO) {
         std::cout << "Resposta invalida, responda com sim ou nao." << std::endl;
@@ -59,7 +68,7 @@ int RodarJogo(const std::string diretorio_jogo) {
       std::cout << "Seu objeto é um/a " << string_arvore << "? (SIM/NAO)" << std::endl;
       std::getline(std::cin, resposta_usuario);
 
-      int resposta_avaliada = AvaliarResposta(resposta_usuario);
+      CodigosJogo resposta_avaliada = AvaliarResposta(resposta_usuario);
 
       while(resposta_avaliada == ERRO) {
         std::cout << "Resposta invalida, responda com sim ou nao." << std::endl;
@@ -96,7 +105,7 @@ int RodarJogo(const std::string diretorio_jogo) {
     std::string alternativa_usuario;
     std::getline(std::cin, alternativa_usuario);
 
-    int alternativa_avaliada = AvaliarResposta(alternativa_usuario);
+    CodigosJogo alternativa_avaliada = AvaliarResposta(alternativa_usuario);
 
     while(alternativa_avaliada == ERRO) {
       std::cout << "Resposta invalida, responda com sim ou nao." << std::endl;
@@ -126,17 +135,39 @@ int RodarJogo(const std::string diretorio_jogo) {
 
   } // if(!acertou_objeto)
 
-  
-  for(int i = 0;i < 4;i++){
-    for(int j = 0;j < (1 << i);j++){
-      std::string buffer;
-
-      if(arvore_jogo.LerCelula(i, j, buffer) == arvores::EXITO)
-        std::cout << "(" <<i<<","<<j<<")"<<" => "<< buffer << std::endl;
-    }
+  //Tenta salvar o jogo resultante no arquivo
+  if (arvore_jogo.SalvarNoArquivo(diretorio_jogo_saida) == arvores::FALHA) {
+    return arvores::FALHA;
+  } else {
+    ErroEscritaJogo(diretorio_jogo_saida);
+    return arvores::EXITO;
   }
+
 }
 
-int main(){
-  RodarJogo("arvore_padrao.txt");
+int main(int argc, char* argv[]){
+  //Verifica se a quantidade de argumentos que o usuario passou é valida
+  if (argc > 3) {
+    std::cout << "Uso: " << argv[0] << "<arquivo de entrada> <arquivo de saida>" << std::endl;
+    std::cout << "Caso nao seja especificado arquivo de saida, o programa salvara o resultado no final do arquivo de entrada" << std::endl;
+    std::cout << "Caso nao seja especificado nenhum arquivo, o jogo vai carregar o arquivo de jogo padrao (jogo_padrao.txt)" << std::endl;
+    return 1; 
+  }
+
+  const std::string jogo_padrao = "jogo_padrao.txt";
+
+  arvores::CodigosErro codigo_erro;
+  if (argc == 1) {
+    codigo_erro = RodarJogo(jogo_padrao, jogo_padrao);
+  } else if (argc == 2) {
+    const std::string arquivo_entrada = argv[1];
+    codigo_erro = RodarJogo(arquivo_entrada, arquivo_entrada);
+  } else {
+    const std::string arquivo_entrada = argv[1];
+    const std::string arquivo_saida = argv[2];
+    codigo_erro = RodarJogo(arquivo_entrada, arquivo_saida);
+  }
+
+  return (codigo_erro == arvores::EXITO ? 0 : 1);
+
 }
