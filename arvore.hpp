@@ -1,6 +1,8 @@
 #ifndef ARVORE_H_
 #define ARVORE_H_
 
+/* Igor Bispo de Moraes Coelho Correia - Metodos de Programacao UnB 2018/1 - Matricula 17/0050432 */
+
 #include <iostream>
 #include <memory>
 #include <string>
@@ -50,6 +52,7 @@ class ArvoreBinaria {
     int LerCelula(const uint nivel, const uint posicao, T& saida_dado);
     int MudarValorCelula(const uint nivel, const uint posicao, const T);
     int LerDoArquivo(const std::string diretorio_arquivo);
+    bool TemFilho(const uint nivel, const uint posicao);
 
   private:
     //Para facilitar a escrita do codigo, o ponteiro para CelulaArvore sera
@@ -120,42 +123,57 @@ typename ArvoreBinaria<T>::PtrCelulaArvore ArvoreBinaria<T>::BuscarCelula(const 
  
 }
 
+//A seguir serao definidas as mensagens de erro, caso o usuario defina a flag DEBUG_ARVORES,
+//todos os erros serao notificados na saida de log de erro stderr
+
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
 void ArvoreBinaria<T>::ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao) {
+  #ifdef DEBUG_ARVORES
   std::cerr << "Nao existe celula inicializada em ("<< nivel << "," << posicao << ")" << std::endl;
+  #endif 
 }
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
 void ArvoreBinaria<T>::ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao) {
+  #ifdef DEBUG_ARVORES
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
   std::cerr << " => Posicao Invalida" << std::endl;
+  #endif
 }
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar ja ocupado
 template <class T>
 void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint posicao) {
+  #ifdef DEBUG_ARVORES
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
   std::cerr << " => Ja existe uma celula nessa posicao." << std::endl;
+  #endif
 }
 
 //Mensagem de erro caso o arquivo nao possa ser aberto
 template <class T>
 void ArvoreBinaria<T>::ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo) {
+  #ifdef DEBUG_ARVORES
   std::cerr << "Arquivo " << diretorio_arquivo << " nao pode ser aberto." << std::endl;
+  #endif
 }
 
 //Mensagem de erro caso o arquivo seja invalido
 template <class T>
 void ArvoreBinaria<T>::ErroArquivoInvalido(const std::string diretorio_arquivo) {
+  #ifdef DEBUG_ARVORES
   std::cerr << "Arquivo " << diretorio_arquivo << " nao é um arquivo de arvore valido." << std::endl;
+  #endif
 }
 
 //Mensagem de erro caso o usuario tente usar leitura/escrita de arquivo em tipo invalido
 template <class T>
 void ArvoreBinaria<T>::ErroTipoLeituraDeArquivo(void) {
+  #ifdef DEBUG_ARVORES
   std::cerr << "Nao pode salvar esse tipo de arvore em arquivo" << std::endl;
+  #endif
 }
 
 
@@ -280,7 +298,7 @@ int ArvoreBinaria<T>::LerCelula(const uint nivel, const uint posicao, T& saida_d
 
 template <class T>
 int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, const T novo_dado) {
-  //Verifica se a posicao que o usuario tentou acessar nao 
+  //Verifica se a posicao que o usuario tentou acessar nao é invalida
   if (posicao >= (1 << nivel)) {
     ErroBuscaCelulaNaoExiste(nivel, posicao);
     return FALHA;
@@ -425,6 +443,46 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
 
 }
 
+template <class T>
+bool ArvoreBinaria<T>::TemFilho(const uint nivel, const uint posicao) {
+  //Verifica se a posicao que o usuario tentou acessar nao é invalida
+  if (posicao >= (1 << nivel)) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return false;
+  }
+  //Calculando o caminho a ser percorrido ate a celula
+  std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
+
+  int nivel_atual = 0;
+  int nivel_alvo = nivel; 
+  PtrCelulaArvore ptr_celula = raiz;
+
+  while(nivel_atual < nivel_alvo && ptr_celula != nullptr) {
+    if (caminho_em_bits[nivel_atual] == ESQUERDA) {
+      ptr_celula = ptr_celula->esquerda;
+    } else {
+      ptr_celula = ptr_celula->direita;
+    }
+    nivel_atual++;
+  }
+
+  //Verifica se foi possivel chegar no nivel desejado pelo usuario
+  if (nivel_atual != nivel_alvo) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return false;
+  }
+
+   //Verifica se existe uma celula na posicao desejada pelo usuario
+  if (ptr_celula == nullptr) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return false;
+  }
+
+  //Verifica se a celula tem filhos
+  if(ptr_celula->esquerda != nullptr || ptr_celula->direita != nullptr)
+    return true;
+
+}
 } //namespace arvores
 
 #endif 

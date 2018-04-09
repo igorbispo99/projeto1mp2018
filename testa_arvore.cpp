@@ -1,4 +1,6 @@
 #define CATCH_CONFIG_MAIN
+#define DEBUG_ARVORES
+
 #include <catch.hpp>
 #include "arvore.hpp"
 
@@ -101,10 +103,16 @@ TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
 
   REQUIRE(saida_arvore == saida_esperada);
 
-
   saida_esperada = "Cama";
   TesteExito(arvore_strings.LerCelula(2, 2, saida_arvore));
   REQUIRE(saida_arvore == saida_esperada);
+
+  //Testa se a verificacao de filhos funciona
+  REQUIRE(arvore_strings.TemFilho(0,0) == true);
+  REQUIRE(arvore_strings.TemFilho(1,0) == true);
+  REQUIRE(arvore_strings.TemFilho(3,7) == true);
+  REQUIRE(arvore_strings.TemFilho(4,13) == false);
+  REQUIRE(arvore_strings.TemFilho(100,100) == false); // Testando celula que nao existe
 
   //Testa a leitura de uma celula que nao esta presente no arquivo
   TesteFalha(arvore_strings.LerCelula(100, 100, saida_arvore)); 
@@ -112,5 +120,8 @@ TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
   // Testando leitura de um arquivo que nao existe
   arvores::ArvoreBinaria<std::string> arvore;
   TesteFalha(arvore.LerDoArquivo("foo")); 
+
+  
+
 
 }

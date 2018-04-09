@@ -7,3 +7,7 @@
 (2,1)=Colher
 (2,2)=Cama
 (2,3)=Carro
+
+(3,7)=Libelula
+
+(4,15)=Jorge
