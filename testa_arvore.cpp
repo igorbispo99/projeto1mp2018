@@ -120,8 +120,24 @@ TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
   // Testando leitura de um arquivo que nao existe
   arvores::ArvoreBinaria<std::string> arvore;
   TesteFalha(arvore.LerDoArquivo("foo")); 
+}
 
-  
+TEST_CASE("Testando a funcao de salvar as arvores no arquivo", "[arvores]") {
+  arvores::ArvoreBinaria<double> arvore_double_escrita;
+  std::string arquivo_saida = "arvore_saida.txt";
 
+  arvore_double_escrita.InserirCelula(0, 0, 2.33);
+  arvore_double_escrita.InserirCelula(1, 0, 30.000001);
+  arvore_double_escrita.InserirCelula(1, 1, 0.01);
 
+  TesteExito(arvore_double_escrita.SalvarNoArquivo(arquivo_saida));
+
+  arvores::ArvoreBinaria<double> arvore_double_leitura;
+  TesteExito(arvore_double_leitura.LerDoArquivo(arquivo_saida));
+
+  double saida_arvore;
+  TesteExito(arvore_double_leitura.LerCelula(1, 1, saida_arvore));
+
+  double saida_esperada = 0.1;
+  REQUIRE(saida_arvore == saida_esperada);
 }

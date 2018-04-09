@@ -52,6 +52,7 @@ class ArvoreBinaria {
     int LerCelula(const uint nivel, const uint posicao, T& saida_dado);
     int MudarValorCelula(const uint nivel, const uint posicao, const T);
     int LerDoArquivo(const std::string diretorio_arquivo);
+    int SalvarNoArquivo(const std::string diretorio_arquivo);
     bool TemFilho(const uint nivel, const uint posicao);
 
   private:
@@ -116,17 +117,17 @@ bool ArvoreBinaria<T>::EstaVazia(void) {
   return CelulaNula(raiz);
 }
 
-template <class T>
-typename ArvoreBinaria<T>::PtrCelulaArvore ArvoreBinaria<T>::BuscarCelula(const uint nivel, const uint posicao) {
+// template <class T>
+// typename ArvoreBinaria<T>::PtrCelulaArvore ArvoreBinaria<T>::BuscarCelula(const uint nivel, const uint posicao) {
  
-}
+// }
 
 //A seguir serao definidas as mensagens de erro, caso o usuario defina a flag DEBUG_ARVORES,
 //todos os erros serao notificados na saida de log de erro stderr
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
-void ArvoreBinaria<T>::ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao) {
+inline void ArvoreBinaria<T>::ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao) {
   #ifdef DEBUG_ARVORES
   std::cerr << "Nao existe celula inicializada em ("<< nivel << "," << posicao << ")" << std::endl;
   #endif 
@@ -134,7 +135,7 @@ void ArvoreBinaria<T>::ErroBuscaCelulaNaoExiste(const uint nivel, const uint pos
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
-void ArvoreBinaria<T>::ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao) {
+inline void ArvoreBinaria<T>::ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao) {
   #ifdef DEBUG_ARVORES
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
   std::cerr << " => Posicao Invalida" << std::endl;
@@ -143,7 +144,7 @@ void ArvoreBinaria<T>::ErroInsercaoCelulaInvalida(const uint nivel, const uint p
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar ja ocupado
 template <class T>
-void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint posicao) {
+inline void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint posicao) {
   #ifdef DEBUG_ARVORES
   std::cerr << "Nao foi possivel inserir a celula em ("<< nivel << "," << posicao << ")";
   std::cerr << " => Ja existe uma celula nessa posicao." << std::endl;
@@ -152,7 +153,7 @@ void ArvoreBinaria<T>::ErroInsercaoCelulaExiste(const uint nivel, const uint pos
 
 //Mensagem de erro caso o arquivo nao possa ser aberto
 template <class T>
-void ArvoreBinaria<T>::ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo) {
+inline void ArvoreBinaria<T>::ErroNaoPodeAbrirArquivo(const std::string diretorio_arquivo) {
   #ifdef DEBUG_ARVORES
   std::cerr << "Arquivo " << diretorio_arquivo << " nao pode ser aberto." << std::endl;
   #endif
@@ -160,7 +161,7 @@ void ArvoreBinaria<T>::ErroNaoPodeAbrirArquivo(const std::string diretorio_arqui
 
 //Mensagem de erro caso o arquivo seja invalido
 template <class T>
-void ArvoreBinaria<T>::ErroArquivoInvalido(const std::string diretorio_arquivo) {
+inline void ArvoreBinaria<T>::ErroArquivoInvalido(const std::string diretorio_arquivo) {
   #ifdef DEBUG_ARVORES
   std::cerr << "Arquivo " << diretorio_arquivo << " nao é um arquivo de arvore valido." << std::endl;
   #endif
@@ -168,7 +169,7 @@ void ArvoreBinaria<T>::ErroArquivoInvalido(const std::string diretorio_arquivo) 
 
 //Mensagem de erro caso o usuario tente usar leitura/escrita de arquivo em tipo invalido
 template <class T>
-void ArvoreBinaria<T>::ErroTipoLeituraDeArquivo(void) {
+inline void ArvoreBinaria<T>::ErroTipoLeituraDeArquivo(void) {
   #ifdef DEBUG_ARVORES
   std::cerr << "Nao pode salvar esse tipo de arvore em arquivo" << std::endl;
   #endif
@@ -410,24 +411,24 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     //que retorna True caso o tipo de dados de V seja o mesmo do especificado a direita "tipo"
 
     //Caso seja string, remove o ultimo caracter pois este é um caracter especial de formatacao do texto
-    if (std::is_same_v<T, std::string>) {
+    if constexpr (std::is_same_v<T, std::string>) {
       string_dado.pop_back(); // Remove o ultimo caracter
       _dado = string_dado; 
     } 
     //Caso seja int, faz a conversao de string para int
-    else if (std::is_same_v<T, int> || std::is_same_v<T,uint>) {
+    else if constexpr (std::is_same_v<T, int> || std::is_same_v<T,uint>) {
       _dado = std::stoi(string_dado);  
     }
     //Caso seja double, faz a conversao de string para double
-    else if (std::is_same_v<T, double>) {
+    else if constexpr (std::is_same_v<T, double>) {
       _dado = std::stod(string_dado);
     }
-    else if (std::is_same_v<T, float>) {
+    else if constexpr (std::is_same_v<T, float>) {
       _dado = std::stof(string_dado);
     }
     //Caso seja um booleano, converte a string True,true ou 1 para true booleano
     //e converte False, false, ou 0 para false booleano
-    else if (std::is_same_v<T, bool>) {
+    else if constexpr (std::is_same_v<T, bool>) {
       string_dado.pop_back();
       if (string_dado == "True" || string_dado == "true" || string_dado == "1") _dado = true;
       if (string_dado == "False" || string_dado == "false" || string_dado == "0") _dado = false;
@@ -444,6 +445,22 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
 
   return EXITO;
 
+}
+
+template <class T>
+int ArvoreBinaria<T>::SalvarNoArquivo(const std::string diretorio_arquivo) {
+  std::ofstream arquivo_saida;
+  //Tentando abrir o arquivo de saida especificado pelo usuario
+  arquivo_saida.open(diretorio_arquivo);
+
+  //Verifica se o arquivo pode se aberto para escrita
+  if (!arquivo_saida.is_open()) {
+    ErroArquivoInvalido(diretorio_arquivo);
+    return arvores::FALHA;
+  }
+
+  arquivo_saida.close();
+  return arvores::EXITO;
 }
 
 template <class T>
