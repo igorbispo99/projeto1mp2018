@@ -40,7 +40,7 @@ std::string DecimalParaBinario(const int decimal, const int numero_de_bits);
   saber em tempo de compilacao quais os tipos foram instanciados pelo arquivo body (.cpp).
 
   Caso as funcoes genericas fossem declaradas no arquivo "arvore.hpp" e definidas 
-  no arquivo "arvore.cpp", a compilacao falharia,
+  no arquivo "arvore.cpp", a compilacao falharia.
 */
 
 template <class T>
@@ -65,14 +65,12 @@ class ArvoreBinaria {
     //da direita e esquerda e um tipo de dado generico
     struct CelulaArvore {
       T dados;
-      PtrCelulaArvore pai;
       PtrCelulaArvore esquerda;
       PtrCelulaArvore direita;
 
       //Definindo construtor de CelulaArvore
       CelulaArvore (const T dado) {
         dados = dado;
-        pai = nullptr;
         esquerda = nullptr;
         direita = nullptr;
       }
@@ -245,10 +243,10 @@ int ArvoreBinaria<T>::InserirCelula(const uint nivel, const uint posicao, const 
 
   if (caminho_em_bits[nivel_atual] == ESQUERDA) {
     ptr_celula->esquerda = nova_celula; // nova_celula está definida no comeco da funcao
-    nova_celula->pai = ptr_celula;
+    //nova_celula->pai = ptr_celula;
   } else {
     ptr_celula->direita = nova_celula; // nova_celula está definida no comeco da funcao
-    nova_celula->pai = ptr_celula;
+    //nova_celula->pai = ptr_celula;
   }
 
   return EXITO;
@@ -434,6 +432,11 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
       if (string_dado == "True" || string_dado == "true" || string_dado == "1") _dado = true;
       if (string_dado == "False" || string_dado == "false" || string_dado == "0") _dado = false;
     }
+    // Caso o tipo da arovre nao seja nenhum dos especificados, retorna erro
+    else {
+      ErroTipoLeituraDeArquivo();
+      return FALHA;
+    }
     //Adiciona os dados lidos na arvore com a funcao InserirCelula e verifica erros
     if (InserirCelula(_nivel, _posicao, _dado) == FALHA) return FALHA;
 
@@ -479,8 +482,12 @@ bool ArvoreBinaria<T>::TemFilho(const uint nivel, const uint posicao) {
   }
 
   //Verifica se a celula tem filhos
-  if(ptr_celula->esquerda != nullptr || ptr_celula->direita != nullptr)
+  if(ptr_celula->esquerda != nullptr || ptr_celula->direita != nullptr) {
     return true;
+  } else {
+    return false;
+  }
+  
 
 }
 } //namespace arvores

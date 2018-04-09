@@ -110,7 +110,7 @@ TEST_CASE("Testando leitura de arvores a partir de arquivos", "[arvore]") {
   //Testa se a verificacao de filhos funciona
   REQUIRE(arvore_strings.TemFilho(0,0) == true);
   REQUIRE(arvore_strings.TemFilho(1,0) == true);
-  REQUIRE(arvore_strings.TemFilho(3,7) == true);
+  REQUIRE(arvore_strings.TemFilho(3,7) == false);
   REQUIRE(arvore_strings.TemFilho(4,13) == false);
   REQUIRE(arvore_strings.TemFilho(100,100) == false); // Testando celula que nao existe
 
