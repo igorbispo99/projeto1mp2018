@@ -11,7 +11,7 @@
 
 namespace arvores {
 
-/*
+/*!
   O acesso as celulas da arvore se da pelo sistema de coordenadas "nivel" e "posicao".
   "Nivel" representa os niveis da arvore binaria, sendo nivel 0 a raiz da arvore.
   "Posicao" representa a posicao da celula em relacao a cada nivel, sendo a posicao
@@ -33,7 +33,7 @@ enum CodigosErro {EXITO = 2, FALHA}; //Definindo os codigos de erro para as func
 //representando o numero "decimal" em base 2 com "numero_de bits" de digitos
 std::string DecimalParaBinario(const int decimal, const int numero_de_bits);
 
-/*
+/*!
   A arvore binaria é definida de forma genérica pra armazenar qualquer tipo de dados.
   Para que o codigo compile, é necessario que tanto a declaracao quanto a definicao
   das funcoes genericas estejam no arquivo header (.hpp) pois o compilador precisa 
@@ -335,7 +335,7 @@ int ArvoreBinaria<T>::MudarValorCelula(const uint nivel, const uint posicao, con
   return EXITO;
 }
 
-/*
+/*!
  Funcao que le as informacoes do tipo de dados arvore a partir de uma arquivo especificado
  como parametro pra funcao. So funciona para arvore de double, int, booleans e strings 
  para evitar exceptions e undefined behaviour.

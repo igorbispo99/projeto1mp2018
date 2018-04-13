@@ -1,10 +1,12 @@
 (0,0)=Seu objeto pode ser encontrado na cozinha?
 (1,0)=Seu objeto pode furar ou cortar?
 (1,1)=Seu objeto normalmente é encontrado no quarto?
-(2,0)=Faca
+(2,0)=Seu objeto é usado para levar a comida até a boca?
 (2,1)=As pessoas geralmente colocam comida encima do seu objeto?
 (2,2)=Cama
 (2,3)=Seu objeto normalmente tem duas rodas?
+(3,0)=Garfo
+(3,1)=Faca
 (3,2)=Prato
 (3,3)=Colher
 (3,6)=Moto

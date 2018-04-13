@@ -137,9 +137,9 @@ arvores::CodigosErro RodarJogo(const std::string diretorio_jogo_entrada, const s
 
   //Tenta salvar o jogo resultante no arquivo
   if (arvore_jogo.SalvarNoArquivo(diretorio_jogo_saida) == arvores::FALHA) {
+    ErroEscritaJogo(diretorio_jogo_saida);
     return arvores::FALHA;
   } else {
-    ErroEscritaJogo(diretorio_jogo_saida);
     return arvores::EXITO;
   }
 
