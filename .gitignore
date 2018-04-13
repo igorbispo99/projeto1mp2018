@@ -30,11 +30,12 @@
 *.exe
 *.out
 *.app
-test
+testa_arvore
+jogo_20_perguntas
 
 #Gcov files
 *.gcda
 *.gcno
 
-#Executaveis de teste
-testa_arvore
+#Arquivos temporarios do Vim
+*.swp
