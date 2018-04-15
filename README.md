@@ -12,7 +12,7 @@ Projeto sobre arvores binarias da disciplina de Métodos de Programacao de 2018 
 ### Módulo de Teste de Arvore.hpp
    Para rodar os teste especificados no arquivo testa_arvore.cpp, deve se executar o arquivo *testa_arvore*.
 ### Jogo 20 Perguntas
-   O jogo é começa ao rodar o executável *jogo_20_perguntas*, o jogo pode tanto abrir/salvar um arquivo de árvore
+   O jogo começa ao rodar o executável *jogo_20_perguntas*, o jogo pode tanto abrir/salvar um arquivo de árvore
    especificado pelo usuário, quanto abrir/salvar o arquivo padrao *jogo_padrao.txt*.
 
    Para ler e salvar o estado do jogo no arquivo padrao (*jogo_padrao.txt*), o usuário deve executar 
