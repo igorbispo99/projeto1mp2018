@@ -53,6 +53,7 @@ class ArvoreBinaria {
     int MudarValorCelula(const uint nivel, const uint posicao, const T);
     int LerDoArquivo(const std::string diretorio_arquivo);
     int SalvarNoArquivo(const std::string diretorio_arquivo);
+    int ApagarCelula(const uint nivel, const uint posicao);
     bool TemFilho(const uint nivel, const uint posicao);
 
   private:
@@ -92,9 +93,12 @@ class ArvoreBinaria {
     void ErroTipoLeituraDeArquivo(void);
 };
 
-//As funcoes genericas tem que ser definidas no arquivo header (.hpp) caso
-//contrario, a compilacao do programa falhara na linkagem das bibliotecas
+/*!
+ Definindo as funcoes da classe ArvoreBinaria
 
+ As funcoes genericas tem que ser definidas no arquivo header (.hpp) caso
+ contrario, a compilacao do programa falhara na linkagem das bibliotecas
+*/
 //Por padrao, a raiz é inicializada com null
 template <class T>
 ArvoreBinaria<T>::ArvoreBinaria(void) {
@@ -117,13 +121,8 @@ bool ArvoreBinaria<T>::EstaVazia(void) {
   return CelulaNula(raiz);
 }
 
-// template <class T>
-// typename ArvoreBinaria<T>::PtrCelulaArvore ArvoreBinaria<T>::BuscarCelula(const uint nivel, const uint posicao) {
- 
-// }
-
-//A seguir serao definidas as mensagens de erro, caso o usuario defina a flag DEBUG_ARVORES,
-//todos os erros serao notificados na saida de log de erro stderr
+///A seguir serao definidas as mensagens de erro, caso o usuario defina a flag DEBUG_ARVORES,
+///todos os erros serao notificados na saida de log de erro stderr
 
 //Mensagem de erro caso o usuario tente inserir uma celula em um lugar invalido
 template <class T>
@@ -409,8 +408,8 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     //Faz a conversao do tipo de dados string para o que foi utilizado no template
     //Para tratar cada caso de conversao separadamente, foi usada a funcao std::is_same_v<T, "tipo">()
     //que retorna True caso o tipo de dados de V seja o mesmo do especificado a direita "tipo"
-
-    //Caso seja string, remove o ultimo caracter pois este é um caracter especial de formatacao do texto
+    
+    //Caso o tipo da arvore seja string, faz uma atribuicao simples
     if constexpr (std::is_same_v<T, std::string>) {
       //string_dado.pop_back(); // Remove o ultimo caracter
       _dado = string_dado; 
@@ -429,7 +428,7 @@ int ArvoreBinaria<T>::LerDoArquivo(std::string diretorio_arquivo) {
     //Caso seja um booleano, converte a string True,true ou 1 para true booleano
     //e converte False, false, ou 0 para false booleano
     else if constexpr (std::is_same_v<T, bool>) {
-      string_dado.pop_back();
+      //string_dado.pop_back();
       if (string_dado == "True" || string_dado == "true" || string_dado == "1") _dado = true;
       if (string_dado == "False" || string_dado == "false" || string_dado == "0") _dado = false;
     }
@@ -476,6 +475,87 @@ int ArvoreBinaria<T>::SalvarNoArquivo(const std::string diretorio_arquivo) {
       }
     }
     //arquivo_saida << std::endl; // Insere uma quebra de linha apos cada nivel para formatar o arquivo
+  }
+
+  return EXITO;
+}
+
+/*!
+  A funcao ApagarCelula recebe como parametro as coordenadas da celula a ser removida
+  e a remove da arvore anulando o ponteiro que existe em seu pai que aponta para si.
+  
+  Tal acao é suficiente para remover todo o galho da arvore ja que o ponteiro
+  inteligente shared_ptr desalocara o objeto assim que o numero de referencias a ele for 0.
+
+  Como todas as referencias a celula que se deseja apagar foram removidas, a celula sera
+  desalocada automaticamente, o que fara com que as referencias aos filhos tambem sejam 
+  zeradas e assim recursivamente destruindo todo o tronco da arvore a partir da celula alvo.
+*/
+template <class T>
+int ArvoreBinaria<T>::ApagarCelula(const uint nivel, const uint posicao) {
+  //Trata o caso de quando o usuario quer apagar uma celula na raiz separadamente
+  if (nivel == 0 && posicao == 0) {
+    raiz = nullptr;
+    return EXITO;
+  }
+  //Verifica se a posicao que o usuario tentou acessar nao é invalida
+  if (posicao >= (1 << nivel)) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return FALHA;
+  }
+
+  //Calculando o caminho a ser percorrido ate a celula
+  std::string caminho_em_bits = DecimalParaBinario(posicao, nivel);
+
+  int nivel_atual = 0;
+
+  //O nivel_alvo é um nivel antes do especificado pelo usuario, pois
+  // a iteracao de busca visa encontrar o pai da celula especificada
+  int nivel_alvo = nivel - 1; 
+
+  PtrCelulaArvore ptr_celula = raiz;
+
+  /*!
+    A iteracao de busca, diferente das outras, so vai ate o pai da celula alvo
+    Ao final do loop, ptr_celula deve estar apontando para a celula pai da celula
+    que o usuario deseja remover e nivel_atual corresponde ao nivel da celula pai
+  */
+  while(nivel_atual < nivel_alvo && ptr_celula != nullptr) {
+    if (caminho_em_bits[nivel_atual] == ESQUERDA) {
+      ptr_celula = ptr_celula->esquerda;
+    } else {
+      ptr_celula = ptr_celula->direita;
+    }
+    nivel_atual++;
+  }
+
+  //Verifica se foi possivel chegar no nivel desejado pelo usuario
+  if (nivel_atual != nivel_alvo) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return FALHA;
+  }
+
+  //Verifica se existe uma celula na posicao desejada pelo usuario
+  if (ptr_celula == nullptr) {
+    ErroBuscaCelulaNaoExiste(nivel, posicao);
+    return FALHA;
+  }
+
+  /*!
+    Coloca os ponteiros do pai e filhos da celula alvo como nulos
+      ptr_celula corresponde a celula pai da celula a ser removida
+      nivel_atual corresponde ao nivel da celula a ser removida
+
+    Nao é necessario colocar todos os ponteiros dos netos/bisnetos...
+    recursivamente como nulo pois o ponteiro inteligente shared_ptr
+    automaticamente vai desalocar todo o tronco assim que as referencias
+    dos respectivos pais forem anuladas.
+  */
+  if (caminho_em_bits[nivel_atual] == ESQUERDA) {
+    //Coloca o ponteiro da celula pai para celula alvo como nulo
+    ptr_celula->esquerda = nullptr;
+  } else {
+    ptr_celula->direita = nullptr;
   }
 
   return EXITO;

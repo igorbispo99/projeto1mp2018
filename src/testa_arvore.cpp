@@ -141,3 +141,15 @@ TEST_CASE("Testando a funcao de salvar as arvores no arquivo", "[arvores]") {
   double saida_esperada = 0.01;
   REQUIRE(saida_arvore == saida_esperada);
 }
+
+TEST_CASE("Testando funcoes para excluir celulas da arvore", "[arvores]") {
+  arvores::ArvoreBinaria<std::string> arvore_string;
+  std::string saida_celula;
+  TesteExito(arvore_string.LerDoArquivo("arvore_padrao.txt"));
+
+  TesteFalha(arvore_string.ApagarCelula(10, 10)); // Tenta apagar uma celula que nao existe
+  TesteExito(arvore_string.ApagarCelula(2, 3));
+  TesteFalha(arvore_string.LerCelula(2, 3, saida_celula)); // Verifica se a celula foi apagada
+  TesteExito(arvore_string.ApagarCelula(0, 0)); //Tenta apagar a raiz da arvore
+  REQUIRE(arvore_string.EstaVazia() == true); //Verifica se a arvore esta vazia apos a remocao da raiz 
+}
