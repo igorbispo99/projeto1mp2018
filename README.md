@@ -1,18 +1,23 @@
-# Projeto Árvores Binárias - Métodos de Programaçao 2018/1  
+# Projeto Árvores Binárias - Métodos de Programação 2018/1  
 Projeto sobre arvores binarias da disciplina de Métodos de Programacao de 2018 - UnB
 
 ## Como Compilar:
-   Para compilar o módulo de teste, va até o diretório *src* e rode o comando *make testa_arvore*,
-   será gerado um arquivo executável *testa_arvore* na pasta raiz do diretório projeto1mp2018.
+   Para compilar o módulo de teste, va até o diretório **src** e rode o comando **make testa_arvore**,
+   será gerado um arquivo executável **testa_arvore** na pasta raiz do diretório projeto1mp2018.
 
-   Para compilar o jogo das 20 perguntas, vá até o diretório *src* e execute *make jogo_20_perguntas*,
-   será gerado um arquivo executável *jogo_20_perguntas* na pasta raiz do diretório projeto1mp2018.
+   Para compilar o jogo das 20 perguntas, vá até o diretório **src** e execute **make jogo_20_perguntas**,
+   será gerado um arquivo executável **jogo_20_perguntas** na pasta raíz do diretório projeto1mp2018.
 
-## Acesso das células da árvore:
-   O acesso as celulas da arvore se da pelo sistema de coordenadas **"nivel"** e **"posicao"**.
-  **"Nivel**" representa os níveis da árvore binária, sendo nível 0 a raíz da arvore.
-  **"Posicao"** representa a posicao da celula em relacao a cada nivel, sendo a posicao
-  mais a esquerda de cada nivel considerada posicao 0.
+## Acesso às células da árvore:
+  O acesso às celulas da árvore nao é feito de forma direta pelo usuário. Para ler e modificar os
+  valores das células da árvore, o usuário deverá usar as funcoes **LerCelula** e **ModificarCelula**
+  da classe **ArvoreBinaria**.
+  
+  Para facilitar o acesso, foi usado um sistema de coordenadas
+  de  **"nível"** e **"posição"**.  
+  **"Nivel**" representa os níveis (ou andares) da árvore binária, sendo nível 0 a raíz da arvore.    
+  **"Posição"** representa a posição da célula em relação a cada nível, sendo a posição mais à 
+  esquerda de cada nível considerada posição 0.  
 
 ## Arquivo de jogo:
    O arquivo que guarda o estado do jogo é um arquivo de texto puro que contém, em cada linha, um
