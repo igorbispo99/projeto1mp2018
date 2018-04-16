@@ -84,7 +84,6 @@ class ArvoreBinaria {
     //de blocos de codigo.Essas funcoes nao deve ser chamadas diretamente 
     //pelo usuario e, portanto, sao funcoes privadas.
     bool CelulaNula(PtrCelulaArvore celula_arvore);
-    PtrCelulaArvore BuscarCelula(const uint nivel, const uint posicao); 
     void ErroInsercaoCelulaInvalida(const uint nivel, const uint posicao);
     void ErroInsercaoCelulaExiste(const uint nivel, const uint posicao);
     void ErroBuscaCelulaNaoExiste(const uint nivel, const uint posicao); 
