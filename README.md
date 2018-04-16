@@ -3,7 +3,7 @@
    e **arvore.cpp** e um Jogo de 20 Perguntas no arquivo **jogo_20_perguntas.cpp**.
    
    A biblioteca foi desenvolvida 100% na linguagem *C++* com padrao **C++17** e técnica de desenvolvimento orientada
-   a testes, o módulo de testes está no arquivo **testa_arvore.cpp**.
+   a testes utilizando o framework [Catch2](https://github.com/catchorg/Catch2), o módulo de testes está no arquivo **testa_arvore.cpp**.
    
    O desenvolvimento foi focado em um uso genérico da biblioteca de forma que fosse possível armazenar diversos tipos
    de dados nas células da árvore, para isso, foram utilizados templates do **C++** como uma forma de metaprogramação.
