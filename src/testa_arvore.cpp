@@ -13,7 +13,7 @@ void inline TesteFalha(int codigo_erro) {
   REQUIRE(codigo_erro == arvores::FALHA);
 }
 
-TEST_CASE("Testando construtores", "[arvore]") {
+TEST_CASE("Testando inicializadores", "[arvore]") {
   arvores::ArvoreBinaria<int> arvore_int;
   arvores::ArvoreBinaria<std::string> arvore_string;
   REQUIRE(arvore_int.EstaVazia());
