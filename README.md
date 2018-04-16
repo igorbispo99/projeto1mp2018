@@ -14,10 +14,20 @@ Projeto sobre arvores binarias da disciplina de Métodos de Programacao de 2018 
   da classe **ArvoreBinaria**.
   
   Para facilitar o acesso, foi usado um sistema de coordenadas
-  de  **"nível"** e **"posição"**.  
+  de  **"nível"** e **"posição"**:
+  
   **"Nivel**" representa os níveis (ou andares) da árvore binária, sendo nível 0 a raíz da arvore.    
   **"Posição"** representa a posição da célula em relação a cada nível, sendo a posição mais à 
   esquerda de cada nível considerada posição 0.  
+  <pre>
+  Exemplo: (Pos. indica Posicao)
+  Nivel 0             (Pos.0)        
+                    /         \                   
+  Nivel 1        (Pos.0)     (Pos.1)    
+                /     \      /     \ 
+  Nivel 2    (Pos.0)(Pos.1) (Pos.2) (Pos. 3) 
+  ...                  ...  
+  </pre>
 
 ## Arquivo de jogo:
    O arquivo que guarda o estado do jogo é um arquivo de texto puro que contém, em cada linha, um
