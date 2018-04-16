@@ -1,12 +1,15 @@
-# Projeto Árvores Binárias - Métodos de Programação 2018/1  
-Projeto sobre arvores binarias da disciplina de Métodos de Programacao de 2018 - UnB
-
-## Como Compilar:
-   Para compilar o módulo de teste, va até o diretório **src** e rode o comando **make testa_arvore**,
-   será gerado um arquivo executável **testa_arvore** na pasta raiz do diretório projeto1mp2018.
-
-   Para compilar o jogo das 20 perguntas, vá até o diretório **src** e execute **make jogo_20_perguntas**,
-   será gerado um arquivo executável **jogo_20_perguntas** na pasta raíz do diretório projeto1mp2018.
+# Projeto Árvores Binárias - MP 2018/1  
+   Nesse projeto está contida uma biblioteca de árvores binárias representada pelos arquivos **arvore.hpp**
+   e **arvore.cpp** e um Jogo de 20 Perguntas no arquivo **jogo_20_perguntas.cpp**.
+   
+   A biblioteca foi desenvolvida 100% na linguagem *C++* com padrao **C++17** e técnica de desenvolvimento orientada
+   a testes, o módulo de testes está no arquivo **testa_arvore.cpp**.
+   
+   O desenvolvimento foi focado em um uso genérico da biblioteca de forma que fosse possível armazenar diversos tipos
+   de dados nas células da árvore, para isso, foram utilizados templates do **C++** como uma forma de metaprogramação.
+   
+   A biblioteca teve sua compilação testada em sistema Ubuntu 17.10, Solus Linux e macOS usando compilador **g++** de
+   versão 7.0 ou superior.
 
 ## Acesso às células da árvore:
   O acesso às celulas da árvore nao é feito de forma direta pelo usuário. Para ler e modificar os
@@ -45,6 +48,12 @@ Projeto sobre arvores binarias da disciplina de Métodos de Programacao de 2018 
    
    
    
+## Como Compilar:
+   Para compilar o módulo de teste, va até o diretório **src** e rode o comando **make testa_arvore**,
+   será gerado um arquivo executável **testa_arvore** na pasta raiz do diretório projeto1mp2018.
+
+   Para compilar o jogo das 20 perguntas, vá até o diretório **src** e execute **make jogo_20_perguntas**,
+   será gerado um arquivo executável **jogo_20_perguntas** na pasta raíz do diretório projeto1mp2018.
 
 ## Como Usar:
 ### Módulo de Teste de Arvore.hpp
