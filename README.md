@@ -39,21 +39,27 @@
    
    Exemplo:
    
-   **(0,0)="Seu objeto é vermelho?"**  
-   **(1,0)="Seu objeto é uma fruta?"**  
-   **(1,1)="Maçã"**  
-   &emsp;&emsp;&emsp;&emsp;.  
-   &emsp;&emsp;&emsp;&emsp;.  
-   &emsp;&emsp;&emsp;&emsp;. 
-   
-   
+      (0,0)="Seu objeto é vermelho?"
+      (1,0)="Seu objeto é uma fruta?"  
+      (1,1)="Maçã"  
+                .
+                .
+                .
    
 ## Como Compilar:
-   Para compilar o módulo de teste, va até o diretório **src** e rode o comando **make testa_arvore**,
-   será gerado um arquivo executável **testa_arvore** na pasta raiz do diretório projeto1mp2018.
+   Para compilar o módulo de teste:
+   ```sh
+   $ cd src
+   $ make testa_arvore
+   ```
+   Será gerado um arquivo executável **testa_arvore** na pasta raiz do diretório projeto1mp2018.
 
-   Para compilar o jogo das 20 perguntas, vá até o diretório **src** e execute **make jogo_20_perguntas**,
-   será gerado um arquivo executável **jogo_20_perguntas** na pasta raíz do diretório projeto1mp2018.
+   Para compilar o jogo das 20 perguntas:
+   ```sh
+   $ cd src
+   $ make jogo_20_perguntas
+   ```
+   Será gerado um arquivo executável **jogo_20_perguntas** na pasta raíz do diretório projeto1mp2018.
 
 ## Como Usar:
 ### Módulo de Teste de Arvore.hpp
@@ -64,20 +70,20 @@
 
    Para ler e salvar o estado do jogo no arquivo padrao (**jogo_padrao.txt**), o usuário deve executar 
    **jogo_20_perguntas** sem parâmetros na linha de comando:
-   
-   Exemplo : *./jogo_20_perguntas*
-
+   ```sh
+   $ ./jogo_20_perguntas
+   ```
    Para ler e salvar o estado do jogo em um arquivo específico, o usuário deve executar 
-   **jogo_20_perguntas** seguido do nome do arquivo que deseja ler e salvar o estado do jogo:
-   
-   Exemplo : *./jogo_20_perguntas arquivo.txt*
-
+   **jogo_20_perguntas** seguido do nome do arquivo que deseja ler e salvar o estado do jogo: 
+   ```sh
+   $ ./jogo_20_perguntas arquivo.txt
+   ```
    Para ler e salvar o estado do jogo em arquivos diferentes, o usuário deve executar 
    **jogo_20_perguntas** seguido do nome do arquivo que deseja ler e do arquivo no qual
    se deseja salvar o estado do jogo:  
-   
-   Exemplo : *./jogo_20_perguntas arquivo_entrada.txt arquivo_saida.txt*
-
+   ```sh
+   $ ./jogo_20_perguntas arquivo_entrada.txt arquivo_saida.txt
+   ```
    **Nao é possível** rodar o jogo sem um arquivo de árvore válido.
    
    #### Como Jogar:
