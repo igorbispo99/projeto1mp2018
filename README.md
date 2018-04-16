@@ -63,16 +63,28 @@
    especificado pelo usuário, quanto abrir/salvar o arquivo padrao **jogo_padrao.txt**.
 
    Para ler e salvar o estado do jogo no arquivo padrao (**jogo_padrao.txt**), o usuário deve executar 
-   **jogo_20_perguntas** sem parâmetros na linha de comando:  
+   **jogo_20_perguntas** sem parâmetros na linha de comando:
+   
    Exemplo : *./jogo_20_perguntas*
 
    Para ler e salvar o estado do jogo em um arquivo específico, o usuário deve executar 
-   **jogo_20_perguntas** seguido do nome do arquivo que deseja ler e salvar o estado do jogo:  
+   **jogo_20_perguntas** seguido do nome do arquivo que deseja ler e salvar o estado do jogo:
+   
    Exemplo : *./jogo_20_perguntas arquivo.txt*
 
    Para ler e salvar o estado do jogo em arquivos diferentes, o usuário deve executar 
    **jogo_20_perguntas** seguido do nome do arquivo que deseja ler e do arquivo no qual
    se deseja salvar o estado do jogo:  
+   
    Exemplo : *./jogo_20_perguntas arquivo_entrada.txt arquivo_saida.txt*
 
-  Nao é possível rodar o jogo sem um arquivo de árvore válido.
+   **Nao é possível** rodar o jogo sem um arquivo de árvore válido.
+   
+   #### Como Jogar:
+    O usuário deve executar o jogo e responder as perguntas feita pelo programa com SIM ou NAO.
+    
+    No final do jogo, caso o computador não tenha acertado o objeto do usuário, o programa perguntará
+    qual o objeto escolhido e pedirá para o usuário inserir uma pergunta nova que ajude o computador 
+    a adivinhar o objeto nas próximas jogadas.
+    
+    A arvore será salva em um arquivo como especificado anteriormente.
