@@ -10,6 +10,8 @@
    
    A biblioteca teve sua compilação testada em sistema Ubuntu 17.10, Solus Linux e macOS usando compilador **g++** de
    versão 7.0 ou superior.
+   
+   Na pasta **doc** está contida uma versao em PDF deste documento e outro com a descrição dos testes.
 
 ## Acesso às células da árvore:
   O acesso às celulas da árvore nao é feito de forma direta pelo usuário. Para ler e modificar os
