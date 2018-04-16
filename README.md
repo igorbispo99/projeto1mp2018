@@ -49,7 +49,9 @@
                 .
    
 ## Como Compilar:
-   Para compilar o módulo de teste:
+   Para compilar o módulo de teste é necessário ter o arquivo [**catch.hpp**](https://github.com/catchorg/Catch2/releases/download/v2.2.2/catch.hpp) no diretorio padrao de bibliotecas do *C++*.
+   
+   Em seguida, deve se executar o seguinte comando:
    ```sh
    $ cd src
    $ make testa_arvore
